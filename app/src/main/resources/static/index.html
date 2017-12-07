@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <link href="main.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+
+        <div class="container" id="app">
+            <header class="header clearfix">
+                <h3 class="float-right">#DevoxxFR</h3>
+                <button v-on:click="refresh" class="btn btn-info btn-sm refresh-btn">Rafraichir</button>
+
+
+                <div v-if="response"
+                     class="resp-info">
+                    <div>Statut: {{ response.status }}</div>
+                    <div>Temps de réponse: {{ response.time }}ms</div>
+                </div>
+
+                <h3 class="text-muted">Hystrix + Feign, simplement résilient</h3>
+            </header>
+
+            <main role="main">
+
+                <div class="row marketing">
+                    <div class="col-lg-9">
+                        <div v-for="aNews in news">
+                            <h4>{{ aNews.title }}</h4>
+                            <p>{{ aNews.content }}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <div class="weather">
+
+                            <div v-if="isFallbackWeather"
+                                 class="fallback">
+                                <span>Fallback - Weather</span>
+                            </div>
+
+                            <div v-else
+                                 class="card card-inverse card-info text-center">
+                                <div class="card-header">
+                                    Météo
+                                </div>
+                                <div class="card-block">
+                                    <img v-bind:src="weatherImage" height="100" width="100"
+                                         v-bind:alt="weather.type" style="margin-top:10px;">
+                                    <p class="card-text">{{ weather.temperature }}°C</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <div class="ads">
+
+                            <div v-if="isFallbackAds"
+                                 class="fallback">
+                                <span>Fallback - Ads</span>
+                            </div>
+
+                            <div v-else
+                                 class="card text-center"
+                                 v-for="ad in ads">
+                                <div class="card-header">
+                                    Annonce
+                                </div>
+                                <div class="card-block">
+                                    <h4 class="card-title">{{ ad.title }}</h4>
+                                    <p class="card-text">{{ ad.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <footer class="footer">
+                <p>©d3rwan, 2018</p>
+            </footer>
+
+        </div>
+
+        <script src="main.js"></script>
+    </body>
+</html>

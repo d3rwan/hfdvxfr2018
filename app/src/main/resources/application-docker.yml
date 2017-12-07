@@ -1,0 +1,20 @@
+weather:
+  url: http://weather-srv:3000
+
+ad:
+  url: http://ad-srv:3000
+
+articles:
+  paris:
+    - title: Bienvenue à Paris
+      content: Y'a plus de saison...
+    - title: Ma bonne dame
+      content: Y'a plus de saison...
+    - title: Lundi
+      content: Il fait chaud !!!
+    - title: Dimanche matin
+      content: Il fait froid !!!
+    - title: Samedi soir
+      content: Il fait beau :)
+    - title: Vendredi matin
+      content: Il pleut :(

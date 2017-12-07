@@ -1,0 +1,111 @@
+/* Space out content a bit */
+body {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+/* Custom page header */
+.header {
+  padding-bottom: 1rem;
+  border-bottom: .05rem solid #e5e5e5;
+}
+
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 3rem;
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 1.5rem;
+  color: #777;
+  border-top: .05rem solid #e5e5e5;
+  text-align: center;
+}
+
+/* Customize container */
+@media (min-width: 48em) {
+  .container {
+    max-width: 78rem;
+  }
+}
+.container-narrow > hr {
+  margin: 2rem 0;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 3rem 0;
+}
+.marketing p + h4 {
+  margin-top: 1.5rem;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 48em) {
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 2rem;
+  }
+}
+
+.refresh-btn {
+  float: right;
+  margin-top: 0.7em;
+  margin-right: 5em;
+}
+
+.ads > .card > .card-header, .weather > .card > .card-header {
+  padding: 0;
+  font-style: italic;
+}
+.ads > .card, .weather > .card {
+  margin-bottom: 0.4em;
+}
+
+.fallback {
+  min-height: 150px;
+  background-color: #ff00005e;
+  opacity: 0.20;
+  -moz-opacity: 20%;
+  -webkit-opacity: 20%;
+  display:block;
+  height:100%;
+  width:100%;
+  border-radius: 15px;
+}
+.fallback span {
+  transform:rotate(330deg);
+  -webkit-transform:rotate(330deg);
+  color: red;
+  display: block;
+  padding-top: 10px;
+}
+
+
+.resp-info {
+  float: right;
+  margin-right: 12em;
+  background-color: #8080803d;
+  border-radius: 15px;
+  padding: 0 15px 0 15px;
+  opacity: 0.5
+}

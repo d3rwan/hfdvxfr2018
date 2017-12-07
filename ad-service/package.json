@@ -1,0 +1,13 @@
+{
+  "name": "com.github.d3rwan.hfdvxfr2018.ad-service",
+  "version": "1.0.0",
+  "author": "d3rwan",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "moment": "^2.19.2"
+  }
+}

@@ -1,0 +1,23 @@
+version: "3.2"
+
+services:
+  app:
+    image: hfdvxfr2018/app:latest
+    container_name: app
+    ports:
+      - "8080:8080"
+  weather-service:
+    image: hfdvxfr2018/weather-service
+    container_name: weather-srv
+    ports:
+      - "3000:3000"
+  ad-service:
+    image: hfdvxfr2018/ad-service
+    container_name: ad-srv
+    ports:
+      - "3001:3000"
+  hystrix-dashboard:
+    image: kennedyoliveira/hystrix-dashboard
+    container_name: hystrix-dashboard
+    ports:
+      - "7979:7979"

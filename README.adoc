@@ -1,0 +1,121 @@
+= Hystrix + Feign, simplement résilient
+Erwan D <https://github.com/d3rwan>
+v1.0.0, 2017-12-07
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+Ou comment rendre son application résiliente simplement avec les librairies _Hystrix_ & _Feign_ de Netflix.
+
+
+=== Architecture
+                                                      +-------------+
+                                                      |   Weather   |
+                                                      |   Service   |
+                                                      +-------------+
+                                                             ▴
+                                                             |
+    +---------+------------+                                 |
+    |         |   Weather  |               HTTP              |
+    |         | Repository |---------------------------------+
+    |         +------------+
+    |    A    |     Ads    |
+    |    P    | Repository |---------------------------------+
+    |    P    +------------+               HTTP              |
+    |         |    News    |                                 |
+    |         | Repository |                                 |
+    +---------+------------+                                 ▾
+                    |                                 +-------------+
+                    |                                 |     Ads     |
+                    |                                 |   Service   |
+                    |                                 +-------------+
+                    |
+                    |
+                    | FileSystem  +----------+
+                    +------------‣| Articles |
+                                  +----------+
+
+
+=== Stack
+
+* Java (JDK 8+)
+* Spring-boot
+* Hystrix
+* Feign
+* Node JS (8+)
+* Express JS
+* Docker
+
+
+=== Fonctionnement
+
+.Créer les images docker
+[source,shell]
+----
+mvn clean package
+----
+
+TIP: S'assurer de switcher sur la branche 'step2' si vous souhaitez avoir la version résiliente
+
+.Lancer la stack
+[source,shell]
+----
+docker-compose up
+----
+
+==== Services distants
+
+Les services distants proposent 3 APIs permettant d'influer sur les réponses,
+et qui vont nous permettre de valider le bon fonctionnement du circuit-breaker
+
+.Désactiver l'API distante (200 -> 404)
+----
+/api/disable
+----
+
+.Activer l'API distante (404 -> 200)
+----
+/api/enable
+----
+
+.Ajouter de la latence à l'API distante (ex. 500ms)
+----
+/api/delay/500
+----
+
+===== Service Weather (météo)
+
+TIP: le service _weather_ écoute sur le port 3000
+
+.Récupérer la météo ciblée pour la ville de Paris
+----
+/api/weather/paris
+----
+
+===== Service Ad (publicités)
+
+TIP: le service _ad_ écoute sur le port 3001
+
+.Récupérer des publicités ciblées pour la ville de Paris
+----
+/api/ad/paris
+----
+
+==== Application principale : News
+
+TIP: l'application principale écoute sur le port 8080
+
+.Récupérer les news pour la ville de Paris
+----
+/api/news/paris
+----
+
+==== Hystrix dashboard
+
+TIP: l'application principale écoute sur le port 7979
+
+Dans l'IHM d'hystrix, ajouter le stream sur l'application principale sur l'url suivante: http://app:8080/metrics/hystrix.stream

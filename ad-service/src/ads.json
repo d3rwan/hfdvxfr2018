@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Ads 1",
+    "description": "Lorem ipsum dolor sit amet",
+    "imageUrl": "",
+    "targetUrl": ""
+  },
+  {
+    "title": "Ads 2",
+    "description": "Aenean euismod ultrices auctor.",
+    "imageUrl": "",
+    "targetUrl": ""
+  },
+  {
+    "title": "Ads 3",
+    "description": " Nam molestie lobortis est sed vulputate.",
+    "imageUrl": "",
+    "targetUrl": ""
+  },
+  {
+    "title": "Ads 4",
+    "description": "Nam nibh lacus, convallis vel dictum in",
+    "imageUrl": "",
+    "targetUrl": ""
+  },
+  {
+    "title": "Ads 5",
+    "description": "Phasellus pretium tincidunt ornare.",
+    "imageUrl": "",
+    "targetUrl": ""
+  },
+  {
+    "title": "Ads 6",
+    "description": "Curabitur bibendum neque at convallis vehicula.",
+    "imageUrl": "",
+    "targetUrl": ""
+  },
+  {
+    "title": "Ads 7",
+    "description": "Quisque nisl urna, tempus ut molestie nec, ultrices venenatis turpis.",
+    "imageUrl": "",
+    "targetUrl": ""
+  }
+]

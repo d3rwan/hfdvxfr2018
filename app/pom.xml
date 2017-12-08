@@ -16,6 +16,7 @@
 
         <jackson.version>2.8.8</jackson.version>
         <hystrix.version>1.5.12</hystrix.version>
+        <feign.version>9.5.1</feign.version>
     </properties>
 
     <dependencies>
@@ -37,6 +38,21 @@
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-metrics-event-stream</artifactId>
             <version>${hystrix.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-hystrix</artifactId>
+            <version>${feign.version}</version>
         </dependency>
     </dependencies>
 

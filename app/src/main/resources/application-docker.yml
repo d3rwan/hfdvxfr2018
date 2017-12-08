@@ -8,6 +8,11 @@ weather:
 
 ad:
   url: http://ad-srv:3000
+  executionTimeoutInMilliseconds: 200
+  circuitBreakerRequestVolumeThreshold: 5
+  circuitBreakerSleepWindowInMilliseconds: 10000
+  circuitBreakerErrorThresholdPercentage: 50
+  metricsRollingPercentileWindowInMilliseconds: 10000
 
 articles:
   paris:

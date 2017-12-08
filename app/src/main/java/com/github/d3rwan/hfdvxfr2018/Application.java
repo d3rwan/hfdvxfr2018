@@ -3,8 +3,8 @@ package com.github.d3rwan.hfdvxfr2018;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.d3rwan.hfdvxfr2018.ad.AdFeignRepository;
 import com.github.d3rwan.hfdvxfr2018.ad.AdRepository;
-import com.github.d3rwan.hfdvxfr2018.ad.AdRestTemplateRepository;
 import com.github.d3rwan.hfdvxfr2018.news.ArticleInMemoryRepository;
 import com.github.d3rwan.hfdvxfr2018.news.ArticleRepository;
 import com.github.d3rwan.hfdvxfr2018.news.NewsResource;
@@ -16,11 +16,18 @@ import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
+import feign.codec.Decoder;
+import feign.codec.Encoder;
+import feign.hystrix.HystrixFeign;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
 
 @SpringBootApplication
 public class Application {
@@ -48,12 +55,34 @@ public class Application {
     }
 
     @Bean
-    public AdRepository adRepository(RestTemplate restTemplate,
-                                     ApplicationProperties properties) {
-        return new AdRestTemplateRepository(
-                restTemplate,
-                properties.getAd().getUrl()
-        );
+    public AdRepository adRepository(ApplicationProperties properties,
+                                     Encoder encoder,
+                                     Decoder decoder) {
+        ApplicationProperties.RemoteService adProperties = properties.getAd();
+        AdFeignRepository fallback = city -> Collections.emptyList();
+        return HystrixFeign.builder()
+                .encoder(encoder)
+                .decoder(decoder)
+                .setterFactory((target, method) -> HystrixCommand.Setter
+                        .withGroupKey(HystrixCommandGroupKey.Factory.asKey("ads"))
+                        .andCommandPropertiesDefaults(
+                                HystrixCommandProperties.Setter()
+                                        .withExecutionTimeoutInMilliseconds(adProperties.getExecutionTimeoutInMilliseconds())
+                                        .withCircuitBreakerRequestVolumeThreshold(adProperties.getCircuitBreakerRequestVolumeThreshold())
+                                        .withCircuitBreakerSleepWindowInMilliseconds(adProperties.getCircuitBreakerSleepWindowInMilliseconds())
+                                        .withCircuitBreakerErrorThresholdPercentage(adProperties.getCircuitBreakerErrorThresholdPercentage())
+                                        .withMetricsRollingPercentileWindowInMilliseconds(adProperties.getMetricsRollingPercentileWindowInMilliseconds())))
+                .target(AdFeignRepository.class, adProperties.getUrl(), fallback);
+    }
+
+    @Bean
+    public Decoder decoder() {
+        return new JacksonDecoder();
+    }
+
+    @Bean
+    public Encoder encoder() {
+        return new JacksonEncoder();
     }
 
     @Bean

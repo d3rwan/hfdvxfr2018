@@ -1,5 +1,10 @@
 weather:
   url: http://localhost:3000
+  executionTimeoutInMilliseconds: 200
+  circuitBreakerRequestVolumeThreshold: 5
+  circuitBreakerSleepWindowInMilliseconds: 10000
+  circuitBreakerErrorThresholdPercentage: 50
+  metricsRollingPercentileWindowInMilliseconds: 10000
 
 ad:
   url: http://localhost:3001

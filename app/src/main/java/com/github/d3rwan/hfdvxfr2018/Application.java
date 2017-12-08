@@ -5,11 +5,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.d3rwan.hfdvxfr2018.ad.AdRepository;
 import com.github.d3rwan.hfdvxfr2018.ad.AdRestTemplateRepository;
-import com.github.d3rwan.hfdvxfr2018.news.*;
+import com.github.d3rwan.hfdvxfr2018.news.ArticleInMemoryRepository;
+import com.github.d3rwan.hfdvxfr2018.news.ArticleRepository;
+import com.github.d3rwan.hfdvxfr2018.news.NewsResource;
+import com.github.d3rwan.hfdvxfr2018.news.NewsService;
 import com.github.d3rwan.hfdvxfr2018.weather.WeatherRepository;
+import com.github.d3rwan.hfdvxfr2018.weather.WeatherResilientRestTemplateRepository;
 import com.github.d3rwan.hfdvxfr2018.weather.WeatherRestTemplateRepository;
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,9 +59,24 @@ public class Application {
     @Bean
     public WeatherRepository weatherRepository(RestTemplate restTemplate,
                                                ApplicationProperties properties) {
-        return new WeatherRestTemplateRepository(
+        ApplicationProperties.RemoteService weatherProperties = properties.getWeather();
+        WeatherRestTemplateRepository weatherRestTemplateRepository = new WeatherRestTemplateRepository(
                 restTemplate,
-                properties.getWeather().getUrl()
+                weatherProperties.getUrl()
+        );
+        HystrixCommand.Setter circuitBreakerConfig = HystrixCommand.Setter
+                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("weather"))
+                .andCommandPropertiesDefaults(
+                        HystrixCommandProperties.Setter()
+                                .withExecutionTimeoutInMilliseconds(weatherProperties.getExecutionTimeoutInMilliseconds())
+                                .withCircuitBreakerRequestVolumeThreshold(weatherProperties.getCircuitBreakerRequestVolumeThreshold())
+                                .withCircuitBreakerSleepWindowInMilliseconds(weatherProperties.getCircuitBreakerSleepWindowInMilliseconds())
+                                .withCircuitBreakerErrorThresholdPercentage(weatherProperties.getCircuitBreakerErrorThresholdPercentage())
+                                .withMetricsRollingPercentileWindowInMilliseconds(weatherProperties.getMetricsRollingPercentileWindowInMilliseconds())
+                );
+        return new WeatherResilientRestTemplateRepository(
+                weatherRestTemplateRepository,
+                circuitBreakerConfig
         );
     }
 
@@ -70,6 +94,17 @@ public class Application {
     @Bean
     public NewsResource newsResource(NewsService newsService) {
         return new NewsResource(newsService);
+    }
+
+    @Bean(name = "hystrixRegistrationBean")
+    public ServletRegistrationBean servletRegistrationBean() {
+        ServletRegistrationBean registration = new ServletRegistrationBean(
+                new HystrixMetricsStreamServlet(),
+                "/metrics/hystrix.stream"
+        );
+        registration.setName("hystrixServlet");
+        registration.setLoadOnStartup(1);
+        return registration;
     }
 
 }
